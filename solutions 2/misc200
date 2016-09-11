@@ -1,0 +1,8 @@
+This problem is based on a real exploit that occurs when data is compressed then encrypted.
+When the encryption runs, it's putting together the username and the flag, compressing them then encrypting the result.
+Compression works by simplifying repeated bytes to save space.
+Thereby if we give a username that matches the first part of the flag, it will compress to be smaller.
+We can thereby put our guess at the first byte of the flag in the username field and look for the
+	smallest one, where it matches the first byte of the flag and is being compressed into the shortest length.
+From there we can guess one byte at a time, checking that the length does not increase, to form the flag.
+I recommend looking at the solution script, misc200.py, to get a better feel for how this works.

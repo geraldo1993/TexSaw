@@ -1,0 +1,9 @@
+This problem is based on the following article:
+	http://www.devttys0.com/2013/10/reverse-engineering-a-d-link-backdoor/
+
+Following that paper gives almost a step-by-step guide to finding the exploit
+Basically, students would have to find the tool binwalk (googling Firmware Analysis Tool brings it up near the top)
+Then they'll have a SquashFS and need to find the vulnerability (google Router Vulnerability, brings up an article on this
+	specific exploit near the top)
+
+This problem was intended to be difficult so that any attendees with CTF experience would still be challenged.

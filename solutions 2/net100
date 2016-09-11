@@ -1,0 +1,5 @@
+In this challenge we are given a pcap, so the first step is to open it in wireshark for analysis.
+A standard tool in wireshark is exporting http objects (File>export>Objects>HTTP).
+This lets us view all the objects passed between the server and client.
+One of these objects is an image from the site imgur.
+When we save this object and view it locallym we see that the image shows the key.

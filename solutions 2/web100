@@ -1,0 +1,5 @@
+This problem is a simple SQL injection - as covered in the web exploitation presentation.
+If we put the following string into the username field:
+	admin' OR '1' = '1';--
+then we login as admin.
+If we then look at the API Key tab, it prints the key out for us.

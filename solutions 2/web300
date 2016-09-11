@@ -1,0 +1,13 @@
+Once again, this problem is not vulnerable to SQL injection and we login with the provided credentials.
+If we look at the cookies, like in web200, we still see the cookie "user=demo"
+If we change this cookie to "user=admin" we still can't see the key, because it's doing a simple checksum
+Luckily, the checksum algorithm is provided for us and we see that it's just adding together the bytes.
+It's rotating every for bytes (so byte 0, 4, 8 are added: 1, 5, 9 are added etc.), taking %10 of the result
+	(145 %10 = 5, 872 %10 = 2, etc.) and then just concatenating the result.
+It's doing this over every cookie, not just the user cookie so we can add in a new cookie "c=0000"
+With 4 zeroes, we know that each location of the checksum will be modified by one of the zeroes.
+We send this to get an intermediate checksum.
+Then we send "c=1000" and check this against the previous checksum, this shows us the offset
+	i.e. if the first zero lines up with the second byte or third byte
+We can then add to each 0 to meet the value it's checking against, which lets us pass the check
+	now that we're logged in as admin, we can again view the flag under API Key

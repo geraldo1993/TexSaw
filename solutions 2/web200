@@ -1,0 +1,5 @@
+This problem looks the same as web100 but SQL injection does not work.
+Thereby we login with the provided credentials.
+If we use LIVE HTTP Headers, we can see all the data sent between our client and the server.
+In the headers we see the cookie "user=demo" which we can then change to "user=admin"
+We're now logged in as admin and can view the flag under API Key.

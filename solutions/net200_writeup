@@ -1,0 +1,80 @@
+net200 is simple a pcap a.k.a packet capture. To verify this is
+actually a pcap you can run the "file" command against the file.
+This will provide back more information about the file incase
+you are not sure about its true beings.
+
+root@kali:~/texsaw/challenges# file net200_fun.pcap 
+net200_fun.pcap: tcpdump capture file (little-endian) - version 2.4 (Ethernet, capture length 65535)
+
+After noticing that it is a tcpdump capture file we can conclude
+this is really a packet capture of network traffic. So to do further
+analysis on the file we open it up in wireshark. 
+
+root@kali:~/texsaw/challenges# wireshark net200_fun.pcap
+
+Looking at the pcap off the bat you should notice, printer
+ssdp, arp. https, http and some other traffic. Typically
+plaintext files can be pulled from this caputures multiple
+ways. One way to see if there is any files being transported
+across the network is to view export objects. That can be
+accomplished by doing the following.
+
+File > Export Objects > http
+
+You will see 3 different tcp segments happen all of them have the
+same meaning. One is base64 the other hex and the last ascii.
+PdF-FuN.pdf is the object of interests here. Clicking on that segment
+will should to the trace of that connection. But our goal here is 
+to grab the PdF-FuN.pdf from the pcap. Clicking the save as button on
+the bottom right corner of the wireshark window, you can save the object
+as is to your local machine. 
+
+root@kali:~/texsaw/challenges# file PdF-FuN.pdf 
+PdF-FuN.pdf: PDF document, version 1.1
+root@kali:~/texsaw/challenges# 
+
+Opening up the PDF (which you should do with caution. Probably in a sandbox)
+you will notice it has a note. Use your choice of PDF reader.
+
+"Oh Haiya. Glad you made it here the key is close
+Click inside the rectangle to save csg to a temporary folder and launch it.
+Click here"
+
+This part was a little joke but still real. I made a button that could drop
+the file but did it for the laughs. Your next would be to carve
+out the file inside of the pdf. There are a few ways you could
+do this. File carving is the way I go for forensics and other
+situations. Although i do hear MS word might be able to do it.
+
+root@kali:~/texsaw/challenges# hexdump -C PdF-FuN.pdf | more
+00000000  25 50 44 46 2d 31 2e 31  0a 25 d0 d0 d0 d0 0a 0a  |%PDF-1.1.%......|
+00000010  31 20 30 20 6f 62 6a 0a  3c 3c 0a 20 2f 54 79 70  |1 0 obj.<<. /Typ|
+00000020  65 20 2f 43 61 74 61 6c  6f 67 0a 20 2f 4f 75 74  |e /Catalog. /Out|
+00000030  6c 69 6e 65 73 20 32 20  30 20 52 0a 20 2f 50 61  |lines 2 0 R. /Pa|
+00000040  67 65 73 20 33 20 30 20  52 0a 20 2f 4e 61 6d 65  |ges 3 0 R. /Name|
+00000050  73 20 3c 3c 20 2f 45 6d  62 65 64 64 65 64 46 69  |s << /EmbeddedFi|
+00000060  6c 65 73 20 3c 3c 20 2f  4e 61 6d 65 73 20 5b 28  |les << /Names [(|
+00000070  63 73 67 29 20 37 20 30  20 52 5d 20 3e 3e 20 3e  |csg) 7 0 R] >> >|
+00000080  3e 0a 20 2f 4f 70 65 6e  41 63 74 69 6f 6e 20 39  |>. /OpenAction 9|
+00000090  20 30 20 52 0a 3e 3e 0a  65 6e 64 6f 62 6a 0a 0a  | 0 R.>>.endobj..|
+
+
+csg is the name of the embeddedfile within the PDF.
+
+Once extracting the csg.bin you can run it and get the key
+
+root@kali:~/texsaw/challenges# ../net200/csg 
+Hey there I see you got this far. Well here is the key my friend!!!
+[+] Waiting.....
+[+] Waiting.....
+[+] Waiting.....
+[+] Waiting.....
+[+] Waiting.....
+[+] Waiting.....
+[+] Waiting.....
+[+] Waiting.....
+[+] Waiting.....
+[+] Waiting.....
+key:AliTTleCsGk3y4you
+
+

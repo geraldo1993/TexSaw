@@ -1,0 +1,49 @@
+As the readme suggests: "Fix me then find me"
+
+This packet capture you only get one signle tcp segment
+that is none connecting. But you dont know that until you
+repair the pcap itself.
+
+kali:~/texsaw/challenges# file net300_findme.pcap 
+net300_findme.pcap: data
+
+As you can see if you try to open that file up in wireshark
+you will get an error stating this file is not reconigzed.
+As you learned from the previous net200 challenge magic number
+is everything when it comes to file identification. 
+Looking around the internet you can find what the magic
+number for a pcap should be d4 c3 b2 a1
+You need to replace the first 4 bytes of the net300 pcap with
+the correct one.
+root@kali:~/texsaw/challenges# hexdump -C net300_findme.pcap |more
+00000000  4c 55 4c 5a 02 00 04 00  00 00 00 00 00 00 00 00  |LULZ............|
+
+^----- bad
+
+Using your favorite editor i prefer bless change the LULZ 4 bytes to the correct d4c3b2a1
+
+root@kali:~/texsaw/challenges# hexdump -C net300.pcap | head
+00000000  d4 c3 b2 a1 02 00 04 00  00 00 00 00 00 00 00 00  |................|
+
+Saving the output to a new file name (net300.pca) incase i mess it up.
+
+root@kali:~/texsaw/challenges# file net300.pcap 
+net300.pcap: tcpdump capture file (little-endian) - version 2.4 (Ethernet, capture length 32767)
+
+
+Now you can open up the packet capture in your network sniffer of choice :)
+Once you have opened the pcap you will see one segment with not much information.
+If you open it in wireshark one thing that should tip you off is the time column
+is incorrect. It shows all zeros. Keeping that in mine you might want to try out
+tcpdump. 
+
+root@kali:~/texsaw/challenges# tcpdump -ttvvr net300.pcap 
+reading from file net300.pcap, link-type EN10MB (Ethernet)
+32985966.967503 IP (tos 0x0, ttl 64, id 1, offset 0, flags [none], proto TCP (6), length 40)
+    1.3.3.7.31337 > li371-224.members.linode.com.12345: Flags [S], cksum 0x05d8 (correct), seq 0, win 8192, length 0
+
+As you can see now you have a time frame but its not the linux epoch time we are looking for.
+It seems to look like gps coordinates. The decimal seems to represent a break in the gps
+32985966.967503 = 32985966 -967503
+
+Putting that GPS coordinates in you will get a location and the name of the building is the key
